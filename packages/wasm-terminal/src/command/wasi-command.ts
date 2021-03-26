@@ -2,6 +2,8 @@
 import { WASI } from "@wasmer/wasi";
 import { WasmFs } from "@wasmer/wasmfs";
 
+import "./wasm_exec.js";
+
 import Command from "./command";
 import CommandOptions from "./command-options";
 
@@ -30,9 +32,20 @@ export default class WASICommand extends Command {
     };
     const wasi = new WASI(options);
     let wasmModule = this.options.module as WebAssembly.Module;
-    let instance = await WebAssembly.instantiate(wasmModule, {
-      ...wasi.getImports(wasmModule)
-    });
-    wasi.start(instance);
+    let imports
+    let go
+    try {
+      imports = wasi.getImports(wasmModule);
+    } catch (e) {
+      console.warn('Error detecting WASI, try go', e);
+      go = new (window as any).Go();
+      imports = go.importObject;
+    }
+    let instance = await WebAssembly.instantiate(wasmModule, imports);
+    if (go) {
+      go.run(instance);
+    } else {
+      wasi.start(instance);
+    }
   }
 }

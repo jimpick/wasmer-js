@@ -90,7 +90,10 @@ const unoptimizedBundles = [
     output: {
       file: "lib/unoptimized/wasm-terminal.esm.js",
       format: "esm",
-      sourcemap: sourcemapOption
+      sourcemap: sourcemapOption,
+      globals: {
+        "./src/command/wasm_exec.js": "Go"
+      }
     },
     watch: {
       clearScreen: false

@@ -21,7 +21,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "bin": {
-    "wasmer-js": "./bin/wasmer-js"
+    "wasmer-js": "bin/wasmer-js"
   },
   "files": [
     "/bin",
