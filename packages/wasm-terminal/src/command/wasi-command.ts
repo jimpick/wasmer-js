@@ -42,7 +42,7 @@ export default class WASICommand extends Command {
     let go
     try {
       imports = wasi.getImports(wasmModule)
-      importsProxy = wasiProxy.getImports(wasmModule)
+      // importsProxy = wasiProxy.getImports(wasmModule)
     } catch (e) {
       console.warn('Error detecting WASI, try go', e)
       let response = await fetch('/demo.wasm')
@@ -59,6 +59,7 @@ export default class WASICommand extends Command {
       imports = go.importObject
     }
 
+    /*
     if (!imports.go) {
       const getiovs = (iovs: number, iovsLen: number) => {
         wasi.refreshMemory()
@@ -106,6 +107,7 @@ export default class WASICommand extends Command {
         wasiProxyImports.fd_write(fd, newIovs, iovsLen, newNwritten)
       }
     }
+    */
 
     console.log('Jim imports', imports)
     let instance = await WebAssembly.instantiate(wasmModule, imports)
