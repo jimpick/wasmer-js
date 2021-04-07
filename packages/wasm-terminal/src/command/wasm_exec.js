@@ -509,34 +509,38 @@
               const m = Reflect.get(v, loadString(sp + 16))
               const args = loadSliceOfValues(sp + 32)
               if (m == global.fs.write) {
-                console.log('Jim syscall/js.valueCall global.fs.write', args)
+                console.log('JimX syscall/js.valueCall global.fs.write', args)
                 const [fd, buf, offset, length, position] = args
                 if (fd === 1) {
-                  this.wasiProxy.refreshMemory()
+                  // Copy data to proxy memory
                   const newIovs = 0
                   const iovsLen = 1
                   const bufLen = length
                   const i = 0 // We don't need to loop
                   let newBufPtr = 8 * iovsLen
-                  // Copy data to proxy memory
                   const newPtr = newIovs + i * 8
-                  this.wasiProxy.view.setUint32(newPtr, newBufPtr, true)
-                  this.wasiProxy.view.setUint32(newPtr + 4, bufLen, true)
-                  // FIXME: Copy bytes in
-                  const dest = new Uint8Array(
-                    this.wasiProxy.memory.buffer,
-                    newBufPtr,
-                    bufLen
-                  )
-                  newBufPtr += bufLen
-                  dest.set(buf)
-                  const newNwritten = newBufPtr
-                  this.wasiProxyImports.fd_write(
-                    fd,
-                    newIovs,
-                    iovsLen,
-                    newNwritten
-                  )
+                  const bufCopy = new Uint8Array(bufLen)
+                  bufCopy.set(buf)
+                  setTimeout(() => {
+                    this.wasiProxy.refreshMemory()
+                    this.wasiProxy.view.setUint32(newPtr, newBufPtr, true)
+                    this.wasiProxy.view.setUint32(newPtr + 4, bufLen, true)
+                    // FIXME: Copy bytes in
+                    const dest = new Uint8Array(
+                      this.wasiProxy.memory.buffer,
+                      newBufPtr,
+                      bufLen
+                    )
+                    newBufPtr += bufLen
+                    dest.set(bufCopy)
+                    const newNwritten = newBufPtr
+                    this.wasiProxyImports.fd_write(
+                      fd,
+                      newIovs,
+                      iovsLen,
+                      newNwritten
+                    )
+                  }, 0)
                 }
               }
               const result = Reflect.apply(m, v, args)

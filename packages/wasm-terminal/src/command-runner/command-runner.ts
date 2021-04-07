@@ -65,6 +65,7 @@ export default class CommandRunner {
   }
 
   async runCommand() {
+    console.log('Jim1 runCommand', this.commandString)
     // First, let's parse the string into a bash AST
     const commandAst = parse(this.commandString);
     try {
@@ -161,10 +162,12 @@ export default class CommandRunner {
       this.commandOptionsForProcessesToRun[commandOptionIndex].module &&
       this.supportsSharedArrayBuffer
     ) {
+      console.log('Jim _spawnProcess worker')
       spawnedProcessObject = await this._spawnProcessAsWorker(
         commandOptionIndex
       );
     } else {
+      console.log('Jim _spawnProcess service')
       spawnedProcessObject = await this._spawnProcessAsService(
         commandOptionIndex
       );
@@ -349,6 +352,8 @@ export default class CommandRunner {
   ) {
     const { commandOptionIndex, processWorker } = endCallbackConfig;
 
+    console.log('Jim _processEndCallback')
+    console.trace()
     if (processWorker) {
       // Terminate our worker
       processWorker.terminate();
@@ -421,6 +426,7 @@ export default class CommandRunner {
       new Promise(resolve => setTimeout(resolve, 500))
     ]).then(responses => responses[0]);
 
+    console.log('Jim1 workerString', workerString)
     if (wasmTty) {
       wasmTty.clearStatus();
     }

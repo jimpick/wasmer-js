@@ -112,9 +112,9 @@ export default class WASICommand extends Command {
     console.log('Jim imports', imports)
     let instance = await WebAssembly.instantiate(wasmModule, imports)
     if (go) {
-      go.run(instance)
+      return go.run(instance)
     } else {
-      wasi.start(instance)
+      return wasi.start(instance)
     }
   }
 }
