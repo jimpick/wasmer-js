@@ -352,8 +352,8 @@ export default class CommandRunner {
   ) {
     const { commandOptionIndex, processWorker } = endCallbackConfig;
 
-    console.log('Jim _processEndCallback')
-    console.trace()
+    // console.log('Jim _processEndCallback')
+    // console.trace()
     if (processWorker) {
       // Terminate our worker
       processWorker.terminate();
