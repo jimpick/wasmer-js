@@ -56,6 +56,7 @@ export default class WASICommand extends Command {
         wasiProxyImports:
           importsProxy.wasi_snapshot_preview1 || importsProxy.wasi_unstable
       })
+      go.argv = this.options.args
       imports = go.importObject
     }
 
@@ -110,6 +111,7 @@ export default class WASICommand extends Command {
     */
 
     console.log('Jim imports', imports)
+    console.log('Jim args', this.options.args)
     let instance = await WebAssembly.instantiate(wasmModule, imports)
     if (go) {
       return go.run(instance)

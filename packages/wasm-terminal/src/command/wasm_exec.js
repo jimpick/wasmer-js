@@ -511,7 +511,7 @@
               if (m == global.fs.write) {
                 console.log('JimX syscall/js.valueCall global.fs.write', args)
                 const [fd, buf, offset, length, position] = args
-                if (fd === 1) {
+                if (fd === 1 || fd === 2) {
                   // Copy data to proxy memory
                   const newIovs = 0
                   const iovsLen = 1
